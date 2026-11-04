@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SpendWise - Financial Insights & Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "on-secondary-container": "#fefcff",
+        "primary-container": "#172554",
+        "on-primary-container": "#808dc2",
+        "error-container": "#ffdad6",
+        "surface-container-low": "#eff4ff",
+        "surface-container": "#e5eeff",
+        "surface-container-high": "#dce9ff",
+        "surface-container-lowest": "#ffffff",
+        "on-surface-variant": "#45464f",
+        "on-tertiary-container": "#00a371",
+        "surface": "#f8f9ff",
+        "secondary": "#0058be",
+        "secondary-container": "#2170e4",
+        "background": "#f8f9ff",
+        "on-surface": "#0b1c30",
+        "primary": "#000f3f",
+        "on-primary": "#ffffff",
+        "outline-variant": "#c6c5d0",
+        "error": "#ba1a1a"
+      },
+      fontFamily: {
+        sans: ["Inter", "sans-serif"]
+      }
+    }
+  }
+};
+</script>
+<style>
+  ::-webkit-scrollbar { display: none; }
+  body { font-family: 'Inter', sans-serif; overscroll-behavior: none; }
+</style>
+</head>
+<body class="bg-background font-body-md text-on-surface antialiased overflow-x-hidden min-h-screen">
+
+<!-- Toast Notification -->
+<div id="toast-notification" class="fixed top-5 right-5 z-50 bg-primary text-on-primary px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 transition-all duration-300 transform translate-y-[-100px] opacity-0 pointer-events-none">
+  <span id="toast-icon" class="material-symbols-outlined text-on-tertiary-container">check_circle</span>
+  <span id="toast-message" class="text-sm font-semibold">Report generated successfully!</span>
+</div>
+
+<!-- Mobile Sidebar Backdrop -->
+<div id="sidebar-backdrop" class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-40 hidden lg:hidden" onclick="toggleSidebar()"></div>
+
+<!-- Left Sidebar Navigation -->
+<aside id="sidebar" class="fixed left-0 top-0 h-full w-72 bg-surface-container-lowest border-r border-outline-variant/30 z-50 flex flex-col justify-between shadow-md transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0">
+  <div class="flex flex-col flex-1 min-h-0">
+    <div class="p-5 border-b border-outline-variant/20 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-primary-container text-on-primary flex items-center justify-center shrink-0 shadow-sm">
+          <svg class="w-5 h-5 fill-current text-on-tertiary-container" viewBox="0 0 24 24">
+            <path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+          </svg>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-lg font-bold text-primary leading-tight tracking-tight">SpendWise</span>
+          <span class="text-xs text-on-surface-variant font-normal">Take Control of Your Money</span>
+        </div>
+      </div>
+      <button class="lg:hidden p-1 text-on-surface-variant hover:text-on-surface" onclick="toggleSidebar()">
+        <span class="material-symbols-outlined text-[20px]">close</span>
+      </button>
+    </div>
+
+    <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">dashboard</span>
+        <span>Dashboard</span>
+      </a>
+      <a href="transaction.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">receipt_long</span>
+        <span>Transactions</span>
+      </a>
+      <a href="budget.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+        <span>Budgets</span>
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">monitoring</span>
+        <span>Analytics & Reports</span>
+      </a>
+      <a href="financial.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary-container text-on-primary font-semibold text-sm transition-colors">
+        <span class="material-symbols-outlined text-[20px]">insights</span>
+        <span>Financial Insights</span>
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">savings</span>
+        <span>Savings Goals</span>
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">notifications</span>
+        <span>Notifications</span>
+      </a>
+      <a href="setting.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">settings</span>
+        <span>Settings</span>
+      </a>
+    </nav>
+  </div>
+
+  <div class="p-4 border-t border-outline-variant/20 bg-surface-container-lowest">
+    <div class="flex items-center justify-between gap-2">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container font-bold flex items-center justify-center shrink-0 text-xs">
+          AS
+        </div>
+        <div class="flex flex-col min-w-0">
+          <div class="flex items-center gap-1.5">
+            <span class="text-xs font-semibold text-on-surface truncate">Arjun Sharma</span>
+            <span class="px-1.5 py-0.2 rounded-full bg-surface-container text-secondary text-[9px] font-bold">PRO</span>
+          </div>
+          <span class="text-[11px] text-on-surface-variant truncate">arjun@spendwise.in</span>
+        </div>
+      </div>
+      <button title="Log out" class="p-1.5 text-on-surface-variant hover:text-error transition-colors rounded-lg hover:bg-error-container/40">
+        <span class="material-symbols-outlined text-[18px]">logout</span>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<!-- Main Wrapper -->
+<div class="lg:pl-72 flex flex-col min-h-screen">
+  <!-- Header Bar -->
+  <header class="fixed top-0 left-0 lg:left-72 right-0 h-16 bg-surface/85 backdrop-blur-xl border-b border-outline-variant/30 z-40 flex items-center justify-between px-4 lg:px-6 shadow-xs">
+    <div class="flex items-center gap-3 flex-1 max-w-xl">
+      <button class="lg:hidden p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low" onclick="toggleSidebar()">
+        <span class="material-symbols-outlined text-[24px]">menu</span>
+      </button>
+      <div class="relative w-full max-w-sm">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+        <input id="header-search" oninput="filterInsights()" type="text" placeholder="Search insights, recommendations... (⌘K)" class="w-full h-10 pl-9 pr-12 rounded-lg bg-surface-container-lowest border border-outline-variant/40 text-xs sm:text-sm text-on-surface placeholder:text-on-surface-variant/60 focus:outline-none focus:border-secondary transition-all"/>
+        <kbd class="hidden sm:inline-block absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 text-[10px] font-semibold text-on-surface-variant bg-surface-container rounded border border-outline-variant/40">⌘K</kbd>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button onclick="triggerDownload('PDF')" class="h-9 sm:h-10 px-3 sm:px-4 rounded-lg bg-primary-container text-on-primary hover:bg-primary text-xs sm:text-sm font-semibold inline-flex items-center gap-2 shadow-sm transition-colors">
+        <span class="material-symbols-outlined text-[18px]">download</span>
+        <span class="hidden sm:inline">Health Report</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Page Content -->
+  <main class="flex-1 pt-20 px-4 sm:px-6 lg:px-8 pb-12 w-full max-w-[1440px] mx-auto space-y-6">
+
+    <!-- Top Banner Card -->
+    <div class="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary-container via-primary-container to-secondary p-5 sm:p-6 shadow-xs text-on-primary">
+      <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="max-w-2xl">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="px-2 py-0.5 rounded-full bg-surface/15 text-on-primary text-[10px] uppercase font-bold tracking-wider backdrop-blur-md">SpendWise AI Engine 3.2</span>
+            <span class="inline-flex items-center gap-1 text-xs text-tertiary-fixed font-semibold">
+              <span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed animate-pulse"></span> Live Stream Active
+            </span>
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-on-primary">Financial Insights & Intelligence</h1>
+          <p class="text-xs sm:text-sm text-on-primary-container mt-1">Algorithmic observations and automated recommendations calibrated to your October cash flow.</p>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap shrink-0">
+          <button onclick="setPeriod('month')" id="period-month" class="px-3 py-1.5 rounded-md text-xs font-semibold bg-surface-container-lowest text-primary shadow-xs transition-all">This Month</button>
+          <button onclick="setPeriod('q3')" id="period-q3" class="px-3 py-1.5 rounded-md text-xs font-semibold text-on-primary/80 hover:text-on-primary transition-all">Q3 Review</button>
+          <button onclick="triggerDownload('PDF')" class="h-9 px-3 rounded-lg bg-surface-container-lowest text-primary font-semibold text-xs hover:bg-surface-container-low transition-colors shadow-xs inline-flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">download</span>
+            <span>Export Report</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top KPI Stat Row -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="rounded-xl bg-surface-container-lowest p-4 shadow-xs border border-outline-variant/30 flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-medium text-on-surface-variant">Top Expense Vector</span>
+          <span class="p-2 rounded-lg bg-error-container/40 text-error"><span class="material-symbols-outlined text-[18px]">restaurant</span></span>
+        </div>
+        <div class="mt-2">
+          <div id="kpi-vector-title" class="text-lg font-bold text-on-surface">Food & Dining</div>
+          <div class="flex items-center gap-2 mt-1">
+            <span id="kpi-vector-badge" class="px-2 py-0.5 rounded-full bg-error-container text-error text-[10px] font-bold">32.0% Outflow</span>
+            <span id="kpi-vector-amount" class="text-xs text-on-surface-variant font-semibold">₹18,690.00</span>
+          </div>
+        </div>
+        <div class="mt-3 w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+          <div id="kpi-vector-bar" class="bg-error h-full rounded-full transition-all duration-500" style="width: 32%"></div>
+        </div>
+      </div>
+
+      <div class="rounded-xl bg-surface-container-lowest p-4 shadow-xs border border-outline-variant/30 flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-medium text-on-surface-variant">MoM Spend Shift</span>
+          <span class="p-2 rounded-lg bg-secondary-fixed/40 text-secondary"><span class="material-symbols-outlined text-[18px]">trending_up</span></span>
+        </div>
+        <div class="mt-2">
+          <div id="kpi-shift-title" class="text-lg font-bold text-on-surface">+12.4%</div>
+          <div class="flex items-center gap-2 mt-1">
+            <span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold">vs Prev Period</span>
+            <span id="kpi-shift-delta" class="text-xs text-on-surface-variant font-semibold">+₹6,420 delta</span>
+          </div>
+        </div>
+        <div class="mt-3 flex items-center justify-between text-xs text-on-surface-variant">
+          <span id="kpi-shift-prev">Sep: ₹52,010</span>
+          <span id="kpi-shift-curr" class="text-on-surface font-semibold">Oct: ₹58,430</span>
+        </div>
+      </div>
+
+      <div class="rounded-xl bg-surface-container-lowest p-4 shadow-xs border border-outline-variant/30 flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-medium text-on-surface-variant">Avg Daily Burn</span>
+          <span class="p-2 rounded-lg bg-surface-container text-primary"><span class="material-symbols-outlined text-[18px]">local_fire_department</span></span>
+        </div>
+        <div class="mt-2">
+          <div id="kpi-burn-title" class="text-lg font-bold text-on-surface">₹2,336.80</div>
+          <div class="flex items-center gap-2 mt-1">
+            <span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant text-[10px] font-bold">Safe Velocity</span>
+            <span id="kpi-burn-budget" class="text-xs text-on-surface-variant">Budget: ₹2,580/d</span>
+          </div>
+        </div>
+        <div class="mt-3 w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+          <div class="bg-secondary-container h-full rounded-full" style="width: 78%"></div>
+        </div>
+      </div>
+
+      <div class="rounded-xl bg-surface-container-lowest p-4 shadow-xs border border-outline-variant/30 flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-medium text-on-surface-variant">Projected Month-End Net</span>
+          <span class="p-2 rounded-lg bg-tertiary-fixed/30 text-on-tertiary-container"><span class="material-symbols-outlined text-[18px]">savings</span></span>
+        </div>
+        <div class="mt-2">
+          <div id="kpi-net-title" class="text-lg font-bold text-on-tertiary-container">₹86,580</div>
+          <div class="flex items-center gap-2 mt-1">
+            <span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed text-[10px] font-bold">Above Target</span>
+            <span id="kpi-net-delta" class="text-xs text-on-surface-variant">+₹11.5k vs goal</span>
+          </div>
+        </div>
+        <div class="mt-3 flex items-center justify-between text-xs text-on-surface-variant">
+          <span>Target: ₹75,000</span>
+          <span class="text-on-tertiary-container font-semibold">115.4%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- Feed Section (7 cols) -->
+      <div class="lg:col-span-7 space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-lg bg-secondary-container text-on-secondary flex items-center justify-center">
+              <span class="material-symbols-outlined text-[16px]">auto_awesome</span>
+            </div>
+            <div>
+              <h2 class="text-base font-bold text-on-surface">Intelligent Action Feed</h2>
+              <p class="text-xs text-on-surface-variant">Prioritized by monetary impact</p>
+            </div>
+          </div>
+          <span id="insight-count-badge" class="px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface-variant text-xs font-medium">5 Insights Ready</span>
+        </div>
+
+        <!-- Feed List Container -->
+        <div id="insights-feed" class="space-y-3">
+          <!-- Dynamic Feed Rendered Here -->
+        </div>
+      </div>
+
+      <!-- Right Analytics & Shift Column (5 cols) -->
+      <div class="lg:col-span-5 space-y-4">
+        
+        <!-- Weekly Histogram -->
+        <div class="rounded-xl bg-surface-container-lowest p-5 border border-outline-variant/30 shadow-xs">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <h3 class="text-sm font-bold text-on-surface">Weekly Outflow Pace</h3>
+              <p class="text-xs text-on-surface-variant">Spend distribution across October weeks</p>
+            </div>
+            <span class="text-xs font-mono text-on-surface-variant bg-surface-container px-2 py-1 rounded-md">Total: ₹58,430</span>
+          </div>
+
+          <div class="h-40 w-full flex items-end justify-between gap-3 pt-4 pb-2">
+            <div class="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+              <span class="text-[10px] font-mono text-on-surface-variant">₹12.2k</span>
+              <div class="w-full bg-secondary-container rounded-t-lg" style="height: 55%;"></div>
+              <span class="text-[10px] text-on-surface-variant mt-1">W1</span>
+            </div>
+            <div class="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+              <span class="text-[10px] font-mono text-on-surface-variant">₹14.8k</span>
+              <div class="w-full bg-secondary-container rounded-t-lg" style="height: 68%;"></div>
+              <span class="text-[10px] text-on-surface-variant mt-1">W2</span>
+            </div>
+            <div class="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+              <span class="text-[10px] font-mono text-error font-bold">₹19.4k</span>
+              <div class="w-full bg-error rounded-t-lg" style="height: 94%;"></div>
+              <span class="text-[10px] font-bold text-on-surface mt-1">W3</span>
+            </div>
+            <div class="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+              <span class="text-[10px] font-mono text-on-surface-variant">₹12.0k</span>
+              <div class="w-full bg-secondary rounded-t-lg" style="height: 52%;"></div>
+              <span class="text-[10px] text-on-surface-variant mt-1">W4</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-on-surface-variant mt-2 pt-2 border-t border-outline-variant/10">
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-secondary-container"></span> Normal Trend</span>
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-error"></span> Festive Overrun (+31%)</span>
+          </div>
+        </div>
+
+        <!-- Category Shifts Bar -->
+        <div class="rounded-xl bg-surface-container-lowest p-5 border border-outline-variant/30 shadow-xs space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-sm font-bold text-on-surface">Category Shifts</h3>
+              <p class="text-xs text-on-surface-variant">Previous vs Current period variance</p>
+            </div>
+            <span class="material-symbols-outlined text-[18px] text-on-surface-variant">compare_arrows</span>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-semibold text-on-surface">Food & Dining</span>
+                <span class="text-error font-bold">₹15.5k → ₹18.6k (+20%)</span>
+              </div>
+              <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden flex">
+                <div class="bg-outline-variant h-full" style="width: 45%"></div>
+                <div class="bg-error h-full" style="width: 55%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-semibold text-on-surface">Shopping & Retail</span>
+                <span class="text-amber-600 font-bold">₹6.2k → ₹8.7k (+40.3%)</span>
+              </div>
+              <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden flex">
+                <div class="bg-outline-variant h-full" style="width: 40%"></div>
+                <div class="bg-amber-500 h-full" style="width: 60%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-semibold text-on-surface">Transport & Fuel</span>
+                <span class="text-on-tertiary-container font-bold">₹6.8k → ₹4.5k (-33.8%)</span>
+              </div>
+              <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden flex">
+                <div class="bg-on-tertiary-container h-full" style="width: 40%"></div>
+                <div class="bg-outline-variant h-full" style="width: 60%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Health Score Widget -->
+        <div class="rounded-xl bg-gradient-to-r from-surface-container-low to-surface-container p-4 border border-outline-variant/30 shadow-xs flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-primary-container text-on-primary font-bold text-base flex items-center justify-center shrink-0">
+              84
+            </div>
+            <div>
+              <div class="text-xs font-bold text-on-surface">Health Score: Excellent</div>
+              <div class="text-[11px] text-on-surface-variant">Top 7% in your income bracket</div>
+            </div>
+          </div>
+          <button onclick="showToast('Health Score breakdown: 92/100 Savings, 78/100 Budget Discipline')" class="text-secondary hover:text-primary">
+            <span class="material-symbols-outlined text-[20px]">info</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Actions Bar -->
+    <div class="rounded-xl bg-surface-container-lowest p-4 border border-outline-variant/30 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-2 rounded-lg bg-surface-container text-primary shrink-0">
+          <span class="material-symbols-outlined text-[20px]">description</span>
+        </div>
+        <div>
+          <h4 class="text-xs font-bold text-on-surface">Audited Financial Statement Ready</h4>
+          <p class="text-[11px] text-on-surface-variant">Includes AI categorizations, tax deductions, and predictive run-rate models.</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="triggerDownload('PDF')" class="px-3.5 py-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-semibold inline-flex items-center gap-1.5 transition-colors">
+          <span class="material-symbols-outlined text-[16px] text-error">picture_as_pdf</span>
+          <span>Download PDF</span>
+        </button>
+        <button onclick="triggerDownload('XLSX')" class="px-3.5 py-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-semibold inline-flex items-center gap-1.5 transition-colors">
+          <span class="material-symbols-outlined text-[16px] text-on-tertiary-container">table_chart</span>
+          <span>Export XLSX</span>
+        </button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  // Initial Insights Data Engine
+  let insights = [
+    {
+      id: 'ins-1',
+      title: 'Unusual Dining Spike',
+      type: 'amber',
+      badge: 'High Volatility',
+      time: 'Detected 2h ago',
+      desc: 'You spent <strong>20% more</strong> on food & takeout this month (<strong>₹18,690</strong> vs <strong>₹15,570</strong>). Switching 3 takeout meals to homemade could recover ~<strong>₹3,200</strong>.',
+      actionText: 'Set Food Alert (₹16k)',
+      actionFn: () => showToast('Food Dining Alert set at ₹16,000 threshold!')
+    },
+    {
+      id: 'ins-2',
+      title: 'Shopping Limit Exceeded',
+      type: 'red',
+      badge: 'Over Budget',
+      time: '+₹760 Overrun',
+      desc: 'Shopping expenses (<strong>₹8,760</strong>) surpassed your <strong>₹8,000</strong> budget by <strong class="text-error">₹760</strong> due to recent electronics purchase.',
+      actionText: 'Adjust Budget to ₹10k',
+      actionFn: () => showToast('Shopping budget adjusted to ₹10,000!')
+    },
+    {
+      id: 'ins-3',
+      title: 'Subscription Optimization',
+      type: 'blue',
+      badge: 'Recurring Audit',
+      time: 'Potential: ₹14.2k/yr',
+      desc: 'You have <strong>5 active recurring subscriptions</strong> totaling <strong>₹3,490/month</strong>. 2 services haven\'t seen logged activity in 45 days.',
+      actionText: 'Audit Subscriptions',
+      actionFn: () => showToast('Subscription audit report opened!')
+    },
+    {
+      id: 'ins-4',
+      title: 'Transport Efficiency Milestone',
+      type: 'green',
+      badge: 'Pacing Well',
+      time: '39.8% Surplus Left',
+      desc: 'Transport is your lowest variance category this month, saving <strong>₹2,990</strong> compared to planned allocation.',
+      actionText: 'Lock Savings',
+      actionFn: () => showToast('₹2,990 transferred to savings goal!')
+    },
+    {
+      id: 'ins-5',
+      title: 'Automated Round-Up Suggestion',
+      type: 'indigo',
+      badge: 'Smart Habit',
+      time: 'Passive Savings',
+      desc: 'Enabling <strong>₹50 round-ups</strong> on UPI spends could generate an estimated <strong>₹2,400</strong> monthly into your Gold vault.',
+      actionText: 'Enable UPI Round-Ups',
+      actionFn: () => showToast('Automated UPI Round-Ups enabled!')
+    }
+  ];
+
+  function renderFeed() {
+    const feed = document.getElementById('insights-feed');
+    const search = (document.getElementById('header-search')?.value || '').toLowerCase();
+
+    const filtered = insights.filter(i => 
+      i.title.toLowerCase().includes(search) || i.desc.toLowerCase().includes(search)
+    );
+
+    document.getElementById('insight-count-badge').textContent = `${filtered.length} Insights Ready`;
+
+    if (filtered.length === 0) {
+      feed.innerHTML = `<div class="p-6 text-center text-on-surface-variant text-xs bg-surface-container-lowest rounded-xl border border-outline-variant/30">No matching insights found.</div>`;
+      return;
+    }
+
+    feed.innerHTML = filtered.map(i => {
+      let borderColor = 'border-amber-500';
+      let iconColor = 'bg-amber-50 text-amber-700';
+      let icon = 'warning';
+      let badgeBg = 'bg-amber-100 text-amber-900';
+
+      if (i.type === 'red') {
+        borderColor = 'border-error';
+        iconColor = 'bg-error-container/50 text-error';
+        icon = 'error';
+        badgeBg = 'bg-error-container text-on-error-container';
+      } else if (i.type === 'blue') {
+        borderColor = 'border-secondary-container';
+        iconColor = 'bg-secondary-fixed/40 text-secondary';
+        icon = 'autorenew';
+        badgeBg = 'bg-secondary-fixed text-on-secondary-fixed';
+      } else if (i.type === 'green') {
+        borderColor = 'border-on-tertiary-container';
+        iconColor = 'bg-tertiary-fixed text-on-tertiary-fixed';
+        icon = 'verified';
+        badgeBg = 'bg-tertiary-fixed text-on-tertiary-fixed';
+      } else if (i.type === 'indigo') {
+        borderColor = 'border-secondary';
+        iconColor = 'bg-secondary-fixed/50 text-secondary';
+        icon = 'currency_rupee';
+        badgeBg = 'bg-secondary-fixed-dim text-on-secondary-fixed';
+      }
+
+      return `
+        <div class="rounded-xl bg-surface-container-lowest p-4 shadow-xs border-l-4 ${borderColor} border-t border-r border-b border-outline-variant/20 transition-all hover:shadow-md">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex items-start gap-3">
+              <div class="w-9 h-9 rounded-lg ${iconColor} flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[20px]">${icon}</span>
+              </div>
+              <div class="space-y-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-xs sm:text-sm font-bold text-on-surface">${i.title}</span>
+                  <span class="px-2 py-0.5 rounded-full ${badgeBg} text-[10px] font-bold">${i.badge}</span>
+                  <span class="text-[11px] text-on-surface-variant">${i.time}</span>
+                </div>
+                <p class="text-xs text-on-surface-variant leading-relaxed">${i.desc}</p>
+              </div>
+            </div>
+          </div>
+          <div class="mt-3 flex items-center justify-end gap-2 pt-2 border-t border-outline-variant/10">
+            <button onclick="dismissInsight('${i.id}')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:bg-surface-container-low transition-colors">Dismiss</button>
+            <button onclick="executeInsightAction('${i.id}')" class="px-3 py-1.5 rounded-lg bg-primary-container text-on-primary text-xs font-semibold hover:bg-primary transition-colors">${i.actionText}</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function dismissInsight(id) {
+    insights = insights.filter(i => i.id !== id);
+    renderFeed();
+    showToast('Insight dismissed');
+  }
+
+  function executeInsightAction(id) {
+    const item = insights.find(i => i.id === id);
+    if (item && item.actionFn) {
+      item.actionFn();
+    }
+  }
+
+  function setPeriod(period) {
+    const btnM = document.getElementById('period-month');
+    const btnQ = document.getElementById('period-q3');
+    if (period === 'month') {
+      btnM.className = 'px-3 py-1.5 rounded-md text-xs font-semibold bg-surface-container-lowest text-primary shadow-xs transition-all';
+      btnQ.className = 'px-3 py-1.5 rounded-md text-xs font-semibold text-on-primary/80 hover:text-on-primary transition-all';
+      document.getElementById('kpi-vector-title').textContent = 'Food & Dining';
+      document.getElementById('kpi-vector-amount').textContent = '₹18,690.00';
+      document.getElementById('kpi-shift-title').textContent = '+12.4%';
+      document.getElementById('kpi-shift-delta').textContent = '+₹6,420 delta';
+      document.getElementById('kpi-shift-prev').textContent = 'Sep: ₹52,010';
+      document.getElementById('kpi-shift-curr').textContent = 'Oct: ₹58,430';
+      showToast('Dashboard switched to October Monthly View');
+    } else {
+      btnQ.className = 'px-3 py-1.5 rounded-md text-xs font-semibold bg-surface-container-lowest text-primary shadow-xs transition-all';
+      btnM.className = 'px-3 py-1.5 rounded-md text-xs font-semibold text-on-primary/80 hover:text-on-primary transition-all';
+      document.getElementById('kpi-vector-title').textContent = 'Rent & Housing';
+      document.getElementById('kpi-vector-amount').textContent = '₹54,000.00';
+      document.getElementById('kpi-shift-title').textContent = '+6.1%';
+      document.getElementById('kpi-shift-delta').textContent = '+₹10,200 delta';
+      document.getElementById('kpi-shift-prev').textContent = 'Q2: ₹166,400';
+      document.getElementById('kpi-shift-curr').textContent = 'Q3: ₹176,600';
+      showToast('Dashboard switched to Q3 Review Period');
+    }
+  }
+
+  function triggerDownload(format) {
+    showToast(`Generating ${format} Financial Health Report...`);
+  }
+
+  function filterInsights() {
+    renderFeed();
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast-notification');
+    document.getElementById('toast-message').textContent = msg;
+    toast.classList.remove('translate-y-[-100px]', 'opacity-0', 'pointer-events-none');
+    setTimeout(() => {
+      toast.classList.add('translate-y-[-100px]', 'opacity-0', 'pointer-events-none');
+    }, 2500);
+  }
+
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('-translate-x-full');
+    document.getElementById('sidebar-backdrop').classList.toggle('hidden');
+  }
+
+  // Keyboard Shortcuts
+  window.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      document.getElementById('header-search')?.focus();
+    }
+  });
+
+  // Initialize
+  renderFeed();
+</script>
+</body>
+</html>

@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SpendWise - Settings & Preferences</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "on-secondary-container": "#fefcff",
+        "primary-container": "#172554",
+        "on-primary-container": "#808dc2",
+        "error-container": "#ffdad6",
+        "surface-container-low": "#eff4ff",
+        "surface-container": "#e5eeff",
+        "surface-container-high": "#dce9ff",
+        "surface-container-lowest": "#ffffff",
+        "on-surface-variant": "#45464f",
+        "on-tertiary-container": "#00a371",
+        "surface": "#f8f9ff",
+        "secondary": "#0058be",
+        "secondary-container": "#2170e4",
+        "background": "#f8f9ff",
+        "on-surface": "#0b1c30",
+        "primary": "#000f3f",
+        "on-primary": "#ffffff",
+        "outline-variant": "#c6c5d0",
+        "error": "#ba1a1a"
+      },
+      fontFamily: {
+        sans: ["Inter", "sans-serif"]
+      }
+    }
+  }
+};
+</script>
+<style>
+  ::-webkit-scrollbar { display: none; }
+  body { font-family: 'Inter', sans-serif; overscroll-behavior: none; }
+</style>
+</head>
+<body class="bg-background font-body-md text-on-surface antialiased overflow-x-hidden min-h-screen">
+
+<!-- Toast Notification -->
+<div id="toast-notification" class="fixed top-5 right-5 z-50 bg-primary text-on-primary px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 transition-all duration-300 transform translate-y-[-100px] opacity-0 pointer-events-none">
+  <span id="toast-icon" class="material-symbols-outlined text-on-tertiary-container">check_circle</span>
+  <div class="flex flex-col">
+    <span id="toast-message" class="text-xs font-bold">Preferences Saved Successfully</span>
+    <span id="toast-subtext" class="text-[11px] text-on-primary-container">Profile updated across all pages!</span>
+  </div>
+</div>
+
+<!-- Mobile Sidebar Backdrop -->
+<div id="sidebar-backdrop" class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-40 hidden lg:hidden" onclick="toggleSidebar()"></div>
+
+<!-- Left Sidebar Navigation -->
+<aside id="sidebar" class="fixed left-0 top-0 h-full w-72 bg-surface-container-lowest border-r border-outline-variant/30 z-50 flex flex-col justify-between shadow-md transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0">
+  <div class="flex flex-col flex-1 min-h-0">
+    <div class="p-5 border-b border-outline-variant/20 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-primary-container text-on-primary flex items-center justify-center shrink-0 shadow-sm">
+          <svg class="w-5 h-5 fill-current text-on-tertiary-container" viewBox="0 0 24 24">
+            <path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+          </svg>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-lg font-bold text-primary leading-tight tracking-tight">SpendWise</span>
+          <span class="text-xs text-on-surface-variant font-normal">Take Control of Your Money</span>
+        </div>
+      </div>
+      <button class="lg:hidden p-1 text-on-surface-variant hover:text-on-surface" onclick="toggleSidebar()">
+        <span class="material-symbols-outlined text-[20px]">close</span>
+      </button>
+    </div>
+
+    <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">dashboard</span>
+        <span>Dashboard</span>
+      </a>
+      <a href="transaction.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">receipt_long</span>
+        <span>Transactions</span>
+      </a>
+      <a href="budget.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+        <span>Budgets</span>
+      </a>
+      <a href="analytics.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">monitoring</span>
+        <span>Analytics & Reports</span>
+      </a>
+      <a href="financial.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">insights</span>
+        <span>Financial Insights</span>
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">savings</span>
+        <span>Savings Goals</span>
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">notifications</span>
+        <span>Notifications</span>
+      </a>
+      <a href="setting.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary-container text-on-primary font-semibold text-sm transition-colors">
+        <span class="material-symbols-outlined text-[20px]">settings</span>
+        <span>Settings</span>
+      </a>
+    </nav>
+  </div>
+
+  <div class="p-4 border-t border-outline-variant/20 bg-surface-container-lowest">
+    <div class="flex items-center justify-between gap-2">
+      <div class="flex items-center gap-3 min-w-0">
+        <img id="sidebar-user-avatar" class="w-9 h-9 rounded-full object-cover shrink-0 ring-1 ring-outline-variant/40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKiDjwCVpp1nKm4xnLDubF_TGPVoq2fu12anJWdfH1e_mcnmgs3PBv1BIVZPsPjuNXmZlK7cFaQjcTw4qNqHNb_zWbHIigqkRhM6tWBBSmmvSSFwJFjttydwjo2baGHPdTB9-7LoR5QUdzAznM4atm33FnzzuKO8P63jHLJQsjqcfgoSxDEVMXk09QGSg6LXmb2bqVtLHV7r-fkEm56zHsBMJ9hJM_P0FMxYmw4eg" alt="User Profile"/>
+        <div class="flex flex-col min-w-0">
+          <div class="flex items-center gap-1.5">
+            <span id="sidebar-user-name" class="text-xs font-semibold text-on-surface truncate">Arjun Sharma</span>
+            <span class="px-1.5 py-0.2 rounded-full bg-surface-container text-secondary text-[9px] font-bold">PRO</span>
+          </div>
+          <span id="sidebar-user-email" class="text-[11px] text-on-surface-variant truncate">arjun@spendwise.in</span>
+          <div class="flex items-center gap-1 mt-0.5">
+            <span class="material-symbols-outlined text-[12px] text-outline">location_on</span>
+            <span id="sidebar-user-location" class="text-[10px] text-on-surface-variant truncate">Bengaluru, India</span>
+          </div>
+        </div>
+      </div>
+      <button title="Log out" class="p-1.5 text-on-surface-variant hover:text-error transition-colors rounded-lg hover:bg-error-container/40">
+        <span class="material-symbols-outlined text-[18px]">logout</span>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<!-- Main Wrapper -->
+<div class="lg:pl-72 flex flex-col min-h-screen">
+  <!-- Header Bar -->
+  <header class="fixed top-0 left-0 lg:left-72 right-0 h-16 bg-surface/85 backdrop-blur-xl border-b border-outline-variant/30 z-40 flex items-center justify-between px-4 lg:px-6 shadow-xs">
+    <div class="flex items-center gap-3 flex-1 max-w-xl">
+      <button class="lg:hidden p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low" onclick="toggleSidebar()">
+        <span class="material-symbols-outlined text-[24px]">menu</span>
+      </button>
+      <div class="relative w-full max-w-sm">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+        <input type="text" placeholder="Search settings, keys, parameters... (⌘K)" class="w-full h-10 pl-9 pr-12 rounded-lg bg-surface-container-lowest border border-outline-variant/40 text-xs sm:text-sm text-on-surface placeholder:text-on-surface-variant/60 focus:outline-none focus:border-secondary transition-all"/>
+        <kbd class="hidden sm:inline-block absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 text-[10px] font-semibold text-on-surface-variant bg-surface-container rounded border border-outline-variant/40">⌘K</kbd>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button onclick="saveAllSettings()" class="h-9 sm:h-10 px-3 sm:px-4 rounded-lg bg-primary-container text-on-primary hover:bg-primary text-xs sm:text-sm font-semibold inline-flex items-center gap-2 shadow-sm transition-colors">
+        <span class="material-symbols-outlined text-[18px]">verified</span>
+        <span>Save Changes</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Page Content -->
+  <main class="flex-1 pt-20 px-4 sm:px-6 lg:px-8 pb-12 w-full max-w-[1440px] mx-auto space-y-6">
+    
+    <!-- Title & Top Actions -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 text-xs text-on-surface-variant font-medium">
+          <span>Account</span>
+          <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+          <span class="text-primary font-semibold">Settings & Preferences</span>
+          <span class="ml-2 px-2 py-0.5 rounded-full bg-surface-container text-secondary text-[10px] font-bold">PRO TIER</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-bold text-primary tracking-tight mt-1">Account Settings & Preferences</h1>
+        <p class="text-xs sm:text-sm text-on-surface-variant mt-0.5">Manage personal identity, tax fiscal cycle, multi-factor security, and global app preferences.</p>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="resetSettingsForm()" class="h-9 px-3.5 rounded-lg bg-surface-container-lowest border border-outline-variant/30 text-on-surface hover:bg-surface-container-low text-xs font-semibold inline-flex items-center gap-1.5 transition-colors">
+          <span class="material-symbols-outlined text-[18px]">restart_alt</span>
+          <span>Reset</span>
+        </button>
+        <button onclick="saveAllSettings()" class="h-9 px-4 rounded-lg bg-primary-container text-on-primary hover:bg-primary text-xs font-semibold inline-flex items-center gap-1.5 shadow-sm transition-colors">
+          <span class="material-symbols-outlined text-[18px]">verified</span>
+          <span>Save Preferences</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Hidden File Input for Avatar Upload -->
+    <input type="file" id="avatar-file-input" accept="image/*" class="hidden" onchange="handleAvatarUpload(event)"/>
+
+    <!-- Main Grid Layout (8 Cols Left, 4 Cols Right) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- LEFT COLUMN -->
+      <div class="lg:col-span-8 space-y-6">
+
+        <!-- SECTION 1: Profile & Identity -->
+        <section class="bg-surface-container-lowest rounded-xl p-5 border border-outline-variant/30 shadow-xs space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-outline-variant/10">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-secondary text-[22px]">badge</span>
+              <h2 class="text-base font-bold text-primary">Personal Profile & Identity</h2>
+            </div>
+            <span class="px-2 py-0.5 rounded-full bg-surface-container text-primary text-[10px] font-bold">KYC VERIFIED</span>
+          </div>
+
+          <!-- Avatar & Header Row -->
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-xl bg-surface-container-low">
+            <div class="relative shrink-0">
+              <img id="form-user-avatar-preview" class="w-20 h-20 rounded-full object-cover ring-4 ring-surface-container-lowest shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKiDjwCVpp1nKm4xnLDubF_TGPVoq2fu12anJWdfH1e_mcnmgs3PBv1BIVZPsPjuNXmZlK7cFaQjcTw4qNqHNb_zWbHIigqkRhM6tWBBSmmvSSFwJFjttydwjo2baGHPdTB9-7LoR5QUdzAznM4atm33FnzzuKO8P63jHLJQsjqcfgoSxDEVMXk09QGSg6LXmb2bqVtLHV7r-fkEm56zHsBMJ9hJM_P0FMxYmw4eg" alt="Profile Avatar"/>
+              <button onclick="triggerAvatarUpload()" title="Upload Photo" class="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-primary-container text-on-primary flex items-center justify-center hover:bg-primary shadow-md transition-colors">
+                <span class="material-symbols-outlined text-[16px]">photo_camera</span>
+              </button>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <h3 id="form-user-name-display" class="text-lg font-bold text-primary truncate">Arjun Sharma</h3>
+                <span class="material-symbols-outlined text-on-tertiary-container text-[18px]">verified</span>
+              </div>
+              <p id="form-user-role-display" class="text-xs text-on-surface-variant font-medium">Senior Software Architect & Fintech Consultant</p>
+              <div class="flex flex-wrap items-center gap-3 mt-1 text-xs text-on-surface-variant">
+                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-secondary">location_on</span> <span id="form-user-location-display">Bengaluru, KA, India</span></span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button onclick="triggerAvatarUpload()" class="px-3 py-1.5 rounded-lg bg-surface-container text-primary hover:bg-surface-container-high text-xs font-semibold transition-colors">Change Photo</button>
+              <button onclick="resetAvatar()" class="px-2 py-1.5 rounded-lg text-error hover:bg-error-container/30 text-xs font-medium transition-colors">Remove</button>
+            </div>
+          </div>
+
+          <!-- Editable Input Form Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="text-xs font-semibold text-on-surface-variant block mb-1">Full Name</label>
+              <input id="input-full-name" oninput="liveUpdateProfilePreview()" type="text" value="Arjun Sharma" class="w-full h-10 px-3 rounded-lg bg-surface border border-outline-variant/30 text-xs sm:text-sm font-semibold text-primary focus:outline-none focus:border-secondary"/>
+            </div>
+
+            <div>
+              <label class="text-xs font-semibold text-on-surface-variant block mb-1">Email Address</label>
+              <input id="input-email" oninput="liveUpdateProfilePreview()" type="email" value="arjun@spendwise.in" class="w-full h-10 px-3 rounded-lg bg-surface border border-outline-variant/30 text-xs sm:text-sm font-semibold text-primary focus:outline-none focus:border-secondary"/>
+            </div>
+
+            <div>
+              <label class="text-xs font-semibold text-on-surface-variant block mb-1">Location / City</label>
+              <input id="input-location" oninput="liveUpdateProfilePreview()" type="text" value="Bengaluru, KA, India" class="w-full h-10 px-3 rounded-lg bg-surface border border-outline-variant/30 text-xs sm:text-sm font-semibold text-primary focus:outline-none focus:border-secondary"/>
+            </div>
+
+            <div>
+              <label class="text-xs font-semibold text-on-surface-variant block mb-1">Professional Role</label>
+              <input id="input-role" oninput="liveUpdateProfilePreview()" type="text" value="Senior Software Architect & Fintech Consultant" class="w-full h-10 px-3 rounded-lg bg-surface border border-outline-variant/30 text-xs sm:text-sm font-semibold text-primary focus:outline-none focus:border-secondary"/>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 2: Regional & Currency Localization -->
+        <section class="bg-surface-container-lowest rounded-xl p-5 border border-outline-variant/30 shadow-xs space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-outline-variant/10">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-secondary text-[22px]">payments</span>
+              <h2 class="text-base font-bold text-primary">Currency & Regional Localization</h2>
+            </div>
+            <span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold">INR Locked</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="text-xs font-semibold text-on-surface-variant block mb-1">Reporting Base Currency</label>
+              <select id="select-currency" onchange="liveUpdateCurrencyPreview()" class="w-full h-10 px-3 rounded-lg bg-surface border border-outline-variant/30 text-xs sm:text-sm font-bold text-primary focus:outline-none focus:border-secondary">
+                <option value="INR" selected>Indian Rupee (₹ INR)</option>
+                <option value="USD">US Dollar ($ USD)</option>
+                <option value="EUR">Euro (€ EUR)</option>
+                <option value="GBP">British Pound (£ GBP)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="text-xs font-semibold text-on-surface-variant block mb-1">Number Formatting Style</label>
+              <select id="select-number-fmt" onchange="liveUpdateCurrencyPreview()" class="w-full h-10 px-3 rounded-lg bg-surface border border-outline-variant/30 text-xs sm:text-sm font-bold text-primary focus:outline-none focus:border-secondary">
+                <option value="lakhs" selected>Indian Syntax (1,00,000 - Lakhs/Cr)</option>
+                <option value="international">International Syntax (100,000 - Millions)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Dynamic Currency Preview Card -->
+          <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Live Currency Format Preview</span>
+              <div id="currency-preview-text" class="text-xl font-bold text-primary font-mono mt-0.5">₹2,48,650.00</div>
+            </div>
+            <span class="text-xs text-on-surface-variant font-medium bg-surface-container-lowest px-2.5 py-1 rounded-lg">Auto Synchronized</span>
+          </div>
+        </section>
+
+        <!-- SECTION 3: Security & Guardrails -->
+        <section class="bg-surface-container-lowest rounded-xl p-5 border border-outline-variant/30 shadow-xs space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-outline-variant/10">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-secondary text-[22px]">lock_clock</span>
+              <h2 class="text-base font-bold text-primary">Security & Access Controls</h2>
+            </div>
+            <span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed text-[10px] font-bold">94/100 Strong</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- 2FA Card -->
+            <div class="p-4 rounded-xl bg-surface-container-low flex flex-col justify-between gap-3">
+              <div class="flex items-start justify-between">
+                <div>
+                  <h3 class="text-xs font-bold text-primary">Two-Factor Authentication (2FA)</h3>
+                  <span class="text-[11px] text-on-tertiary-container font-semibold">TOTP Enabled</span>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" checked class="sr-only peer" id="toggle-2fa" onchange="saveToggleState()"/>
+                  <div class="w-11 h-6 bg-outline-variant rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+                </label>
+              </div>
+              <p class="text-xs text-on-surface-variant">Requires Google Authenticator OTP code on new device sign-ins.</p>
+            </div>
+
+            <!-- Passkeys Card -->
+            <div class="p-4 rounded-xl bg-surface-container-low flex flex-col justify-between gap-3">
+              <div class="flex items-start justify-between">
+                <div>
+                  <h3 class="text-xs font-bold text-primary">Biometric Passkeys (FIDO2)</h3>
+                  <span class="text-[11px] text-on-tertiary-container font-semibold">Touch ID / Face ID</span>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" checked class="sr-only peer" id="toggle-passkey" onchange="saveToggleState()"/>
+                  <div class="w-11 h-6 bg-outline-variant rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+                </label>
+              </div>
+              <p class="text-xs text-on-surface-variant">Hardware Touch ID synced seamlessly via iCloud Keychain authentication.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="lg:col-span-4 space-y-6">
+
+        <!-- Security Scorecard Widget -->
+        <div class="bg-surface-container-lowest rounded-xl p-5 border border-outline-variant/30 shadow-xs space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-primary">Security Hardening</span>
+            <span class="material-symbols-outlined text-secondary text-[20px]">verified</span>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-full bg-primary-container text-on-primary font-bold text-xl flex items-center justify-center shrink-0 shadow-sm">
+              94
+            </div>
+            <div>
+              <div class="text-xs font-bold text-primary">Enterprise Standard</div>
+              <p class="text-[11px] text-on-surface-variant">Passkeys, 2FA, & Biometric Guardrails fully active.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Appearance & Privacy Widget -->
+        <div class="bg-surface-container-lowest rounded-xl p-5 border border-outline-variant/30 shadow-xs space-y-4">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-secondary text-[20px]">palette</span>
+            <h2 class="text-sm font-bold text-primary">Appearance & Display</h2>
+          </div>
+
+          <div>
+            <label class="text-xs font-semibold text-on-surface-variant block mb-1">Theme Mode</label>
+            <div class="grid grid-cols-3 gap-1 bg-surface-container-low p-1 rounded-lg text-xs font-semibold">
+              <button onclick="setTheme('light')" id="theme-btn-light" class="py-1.5 rounded-md bg-surface-container-lowest text-primary shadow-xs">Light</button>
+              <button onclick="setTheme('dark')" id="theme-btn-dark" class="py-1.5 rounded-md text-on-surface-variant">Dark</button>
+              <button onclick="setTheme('system')" id="theme-btn-system" class="py-1.5 rounded-md text-on-surface-variant">System</button>
+            </div>
+          </div>
+
+          <!-- Privacy Shield Toggle -->
+          <div class="p-3.5 rounded-xl bg-surface-container-low space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-primary">Privacy Mask (Glance Shield)</span>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="toggle-privacy-mask" class="sr-only peer" onchange="togglePrivacyMask()"/>
+                <div class="w-9 h-5 bg-outline-variant rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-secondary"></div>
+              </label>
+            </div>
+            <p class="text-[11px] text-on-surface-variant">Blurs financial net worth numbers when working in public places.</p>
+          </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="bg-surface-container-lowest rounded-xl p-5 border border-error/30 shadow-xs space-y-3">
+          <div class="flex items-center gap-2 text-error">
+            <span class="material-symbols-outlined text-[20px]">warning</span>
+            <span class="text-xs font-bold">Danger Zone</span>
+          </div>
+          <p class="text-[11px] text-on-surface-variant">Freeze profile or request permanent data deletion under DPDP Act.</p>
+          <div class="flex gap-2">
+            <button onclick="showToast('Account freeze requested.', 'Verification link sent to your email.')" class="flex-1 py-1.5 rounded-lg bg-surface-container text-error text-xs font-semibold hover:bg-error-container/40 transition-colors">Freeze Account</button>
+            <button onclick="showToast('Data erasure initiated.', 'Processing compliance review.')" class="flex-1 py-1.5 rounded-lg bg-error text-on-error text-xs font-semibold hover:opacity-90 transition-opacity">Delete Data</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  // Global Profile State Engine
+  const defaultProfile = {
+    name: "Arjun Sharma",
+    email: "arjun@spendwise.in",
+    location: "Bengaluru, KA, India",
+    role: "Senior Software Architect & Fintech Consultant",
+    avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuAKiDjwCVpp1nKm4xnLDubF_TGPVoq2fu12anJWdfH1e_mcnmgs3PBv1BIVZPsPjuNXmZlK7cFaQjcTw4qNqHNb_zWbHIigqkRhM6tWBBSmmvSSFwJFjttydwjo2baGHPdTB9-7LoR5QUdzAznM4atm33FnzzuKO8P63jHLJQsjqcfgoSxDEVMXk09QGSg6LXmb2bqVtLHV7r-fkEm56zHsBMJ9hJM_P0FMxYmw4eg",
+    currency: "INR",
+    numberFmt: "lakhs",
+    theme: "light",
+    privacyMask: false
+  };
+
+  // Load saved profile or initialize defaults
+  function loadStoredProfile() {
+    const stored = localStorage.getItem('spendwise_user_profile');
+    if (stored) {
+      try {
+        return { ...defaultProfile, ...JSON.parse(stored) };
+      } catch (e) {
+        return defaultProfile;
+      }
+    }
+    return defaultProfile;
+  }
+
+  let userProfile = loadStoredProfile();
+
+  // Populate UI on page load
+  function populateProfileUI() {
+    document.getElementById('input-full-name').value = userProfile.name;
+    document.getElementById('input-email').value = userProfile.email;
+    document.getElementById('input-location').value = userProfile.location;
+    document.getElementById('input-role').value = userProfile.role;
+
+    document.getElementById('select-currency').value = userProfile.currency;
+    document.getElementById('select-number-fmt').value = userProfile.numberFmt;
+    document.getElementById('toggle-privacy-mask').checked = userProfile.privacyMask;
+
+    updateDOMProfileElements();
+  }
+
+  // Update DOM across sidebar and page headers
+  function updateDOMProfileElements() {
+    // Form previews
+    document.getElementById('form-user-name-display').textContent = userProfile.name;
+    document.getElementById('form-user-role-display').textContent = userProfile.role;
+    document.getElementById('form-user-location-display').textContent = userProfile.location;
+    document.getElementById('form-user-avatar-preview').src = userProfile.avatar;
+
+    // Sidebar elements
+    document.getElementById('sidebar-user-name').textContent = userProfile.name;
+    document.getElementById('sidebar-user-email').textContent = userProfile.email;
+    document.getElementById('sidebar-user-location').textContent = userProfile.location;
+    document.getElementById('sidebar-user-avatar').src = userProfile.avatar;
+
+    liveUpdateCurrencyPreview();
+  }
+
+  // Real-time Input Listeners
+  function liveUpdateProfilePreview() {
+    userProfile.name = document.getElementById('input-full-name').value || defaultProfile.name;
+    userProfile.email = document.getElementById('input-email').value || defaultProfile.email;
+    userProfile.location = document.getElementById('input-location').value || defaultProfile.location;
+    userProfile.role = document.getElementById('input-role').value || defaultProfile.role;
+
+    updateDOMProfileElements();
+  }
+
+  // Live Currency Preview
+  function liveUpdateCurrencyPreview() {
+    const curr = document.getElementById('select-currency').value;
+    const fmt = document.getElementById('select-number-fmt').value;
+    const prevText = document.getElementById('currency-preview-text');
+
+    let symbol = '₹';
+    if (curr === 'USD') symbol = '$';
+    else if (curr === 'EUR') symbol = '€';
+    else if (curr === 'GBP') symbol = '£';
+
+    if (fmt === 'lakhs') {
+      prevText.textContent = `${symbol}2,48,650.00`;
+    } else {
+      prevText.textContent = `${symbol}248,650.00`;
+    }
+  }
+
+  // Profile Avatar Handler
+  function triggerAvatarUpload() {
+    document.getElementById('avatar-file-input').click();
+  }
+
+  function handleAvatarUpload(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        userProfile.avatar = event.target.result;
+        updateDOMProfileElements();
+        showToast("Profile Photo Uploaded!", "Click 'Save Preferences' to persist changes across all pages.");
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function resetAvatar() {
+    userProfile.avatar = defaultProfile.avatar;
+    updateDOMProfileElements();
+    showToast("Profile Photo Reset to Default", "Click 'Save Preferences' to apply.");
+  }
+
+  // Save All Settings into LocalStorage
+  function saveAllSettings() {
+    userProfile.name = document.getElementById('input-full-name').value;
+    userProfile.email = document.getElementById('input-email').value;
+    userProfile.location = document.getElementById('input-location').value;
+    userProfile.role = document.getElementById('input-role').value;
+    userProfile.currency = document.getElementById('select-currency').value;
+    userProfile.numberFmt = document.getElementById('select-number-fmt').value;
+    userProfile.privacyMask = document.getElementById('toggle-privacy-mask').checked;
+
+    // Save state globally
+    localStorage.setItem('spendwise_user_profile', JSON.stringify(userProfile));
+
+    updateDOMProfileElements();
+    showToast("Preferences Saved Successfully", "Name, profile photo, & preferences updated across all pages!");
+  }
+
+  function resetSettingsForm() {
+    userProfile = { ...defaultProfile };
+    localStorage.removeItem('spendwise_user_profile');
+    populateProfileUI();
+    showToast("Settings Reset to Defaults", "Default configuration restored.");
+  }
+
+  // Appearance Theme Switcher
+  function setTheme(mode) {
+    userProfile.theme = mode;
+    const bL = document.getElementById('theme-btn-light');
+    const bD = document.getElementById('theme-btn-dark');
+    const bS = document.getElementById('theme-btn-system');
+
+    bL.className = 'py-1.5 rounded-md text-on-surface-variant';
+    bD.className = 'py-1.5 rounded-md text-on-surface-variant';
+    bS.className = 'py-1.5 rounded-md text-on-surface-variant';
+
+    if (mode === 'light') {
+      bL.className = 'py-1.5 rounded-md bg-surface-container-lowest text-primary shadow-xs';
+    } else if (mode === 'dark') {
+      bD.className = 'py-1.5 rounded-md bg-surface-container-lowest text-primary shadow-xs';
+    } else {
+      bS.className = 'py-1.5 rounded-md bg-surface-container-lowest text-primary shadow-xs';
+    }
+    showToast(`Theme changed to ${mode.toUpperCase()}`);
+  }
+
+  function togglePrivacyMask() {
+    userProfile.privacyMask = document.getElementById('toggle-privacy-mask').checked;
+    showToast(userProfile.privacyMask ? "Privacy Mask Active" : "Privacy Mask Disabled");
+  }
+
+  function saveToggleState() {
+    showToast("Security Setting Updated");
+  }
+
+  // Toast Notification System
+  function showToast(title, subtext = "") {
+    const toast = document.getElementById('toast-notification');
+    document.getElementById('toast-message').textContent = title;
+    document.getElementById('toast-subtext').textContent = subtext || "Updated successfully.";
+    
+    toast.classList.remove('translate-y-[-100px]', 'opacity-0', 'pointer-events-none');
+    setTimeout(() => {
+      toast.classList.add('translate-y-[-100px]', 'opacity-0', 'pointer-events-none');
+    }, 3000);
+  }
+
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('-translate-x-full');
+    document.getElementById('sidebar-backdrop').classList.toggle('hidden');
+  }
+
+  // Initialize Page
+  populateProfileUI();
+</script>
+</body>
+</html>
